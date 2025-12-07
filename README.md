@@ -9,12 +9,13 @@ O projeto transforma dados operacionais desconexos (Notas Fiscais e Pedidos) em 
 🏗️ Arquitetura (Medallion Architecture)
 
 O pipeline de dados segue a arquitetura Medalhão, garantindo qualidade e governança em cada etapa:
-
+```mermaid
 graph LR
-A[notas_fiscais|pedidos (CSV)] --> B((Bronze Layer))
-B --> C((Silver Layer))
-C --> D((Gold Layer))
-D --> E[Dashboard Executivo]
+A["notas_fiscais | pedidos (CSV)"] --> B((Bronze Layer))
+    B --> C((Silver Layer))
+    C --> D((Gold Layer))
+    D --> E[Dashboard Executivo]
+```
 
 
 🟤 Camada Bronze (Ingestão)
@@ -103,8 +104,16 @@ Visualização: Conecte as tabelas Gold ao Databricks Dashboard ou Power BI.
 
 ✒️ Autores
 
-Luan Guedes - Líder [GitHub]()
+Luan Guedes - Líder [GitHub]() 
+
+
 Eduardo Borges [Github](https://github.com/Eduardo-Borges18)
+
+
 Luiz Henrique [LinkedIn](www.linkedin.com/in/luiz-henrique-rocha-silva-450362337)
+
+
 Ricarodo Siberiano [GitHub](https://github.com/byteric)
+
+
 Sérgio Chousinho [GitHub](https://github.com/sergiochou)
