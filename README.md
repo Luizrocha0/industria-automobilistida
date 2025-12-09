@@ -18,6 +18,38 @@ A["notas_fiscais | pedidos (CSV)"] --> B((Bronze Layer))
 ```
 
 
+📖 Histórias de Usuário
+1. O Estrategista Regional
+Roberto, Diretor Comercial da Região Sul, notou que os números gerais subiram, mas quer um "zoom" específico nos estados do Sul onde o volume de pedidos é alto, mas o ticket médio empacou. O objetivo é cirúrgico: parar de gastar marketing onde já se vende bem organicamente e redirecionar a verba apenas para onde precisa aumentar o valor da venda.
+
+2. A Guardiã do Estoque
+Fernanda, Gerente de Supply Chain, precisa mapear quais "Peças de Reposição" saem com muita frequência, mas têm valor baixo. A ideia é colocar a reposição desses itens de "curva C" no piloto automático, liberando a equipe para focar a negociação de preços apenas nos produtos caros que realmente impactam o fluxo de caixa.
+
+3. O Caçador de Eficiência
+Marcelo, Head de Operações, está analisando o Funil de Vendas para descobrir onde perdemos mais: qual status (ex: "Aguardando Aprovação") gera mais cancelamentos? A meta é criar alertas para o Financeiro destravar esses pedidos rápido, evitando perder receita por pura burocracia ou demora.
+
+4. A Visionária de Produto
+Juliana, do Marketing de Produto, quer cruzar o mix de produtos com a sazonalidade para tirar uma dúvida: a venda de SUVs cai drasticamente em meses específicos? Com essa resposta, ela pode planejar promoções agressivas exatamente nessas épocas de baixa histórica, suavizando a curva de receita da empresa.
+
+5. O Auditor de Performance
+Ricardo, Supervisor de Vendas, precisa identificar os vendedores que, apesar de fecharem muitos pedidos, mantêm um ticket médio muito abaixo da equipe. Com a lista em mãos, ele vai treinar esse grupo especificamente em upsell (vender itens adicionais), aumentando a margem sem precisar caçar novos clientes.
+
+6. O CFO (Diretor Financeiro)
+Alberto, nosso CFO, quer visualizar a discrepância real entre a data do pedido (intenção de compra) e a data da nota fiscal (faturamento). Ele precisa disso para ajustar a previsão de cash flow e garantir que a empresa não conte com um dinheiro que, por atrasos operacionais, só vai entrar na conta no mês seguinte.
+
+7. O Expancionista
+Carlos, de Novos Negócios, quer descobrir quais cidades do interior (fora das capitais) estão surpreendendo no ranking de vendas por estado. A intenção é usar dados de demanda reprimida real — e não "achismo" — para decidir onde abrir a próxima filial física ou centro de distribuição.
+
+8. A Analista de Churn (Perda)
+Beatriz, de Sucesso do Cliente, quer investigar se existe um padrão nos pedidos cancelados: eles vêm sempre da mesma região ou envolvem o mesmo grupo de produtos? Detectar isso cedo permite relatar um lote defeituoso ou falha logística regional antes que a imagem da marca seja prejudicada.
+
+9. O Gerente de Campanhas
+Felipe, de Performance, quer saber qual é o produto "porta de entrada" (o mais vendido para novos clientes) em cada estado. A estratégia é usar esse item específico como "isca" nos anúncios regionais, diminuindo o Custo de Aquisição de Cliente (CAC).
+
+10. A Líder de Logística
+Renata, Diretora de Logística, quer comparar o volume físico de vendas (quantidade/peso) contra o retorno financeiro por estado. O objetivo é ter argumentos para renegociar contratos com transportadoras nas rotas onde se carrega muito peso, mas a margem de lucro é apertada.
+
+
 🟤 Camada Bronze (Ingestão)
 
 Ingestão dos arquivos brutos .csv de Pedidos e Notas Fiscais.
