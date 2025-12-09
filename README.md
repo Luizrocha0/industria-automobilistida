@@ -24,6 +24,7 @@ Ingestão dos arquivos brutos .csv de Pedidos e Notas Fiscais.
 
 Os dados são carregados em seu formato original, sem tratamentos, garantindo o histórico cru (Raw Data).
 
+
 ⚪ Camada Silver (Limpeza e Padronização)
 
 Aqui os dados são refinados para se tornarem confiáveis. As principais transformações foram:
@@ -37,6 +38,7 @@ Tipagem: Conversão de strings para datas reais (to_date) e tipos numéricos.
 Qualidade: Tratamento de valores nulos (fillna) e arredondamento de valores decimais (round(2)).
 
 Persistência: Salvamento em formato Delta particionado por Ano e Mês para performance.
+
 
 🟡 Camada Gold (Inteligência de Negócio)
 
@@ -101,6 +103,31 @@ Notebook Silver: Execute o notebook de tratamento para limpar os dados e salvar 
 Notebook Gold: Execute as agregações de negócio para gerar os KPIs.
 
 Visualização: Conecte as tabelas Gold ao Databricks Dashboard ou Power BI.
+
+
+✅ O que deu bom
+Padronização Global: Conseguimos transformar colunas em português e formatos heterogêneos em um padrão global (Inglês) limpo e unificado.
+
+Performance: A estratégia de particionamento por Ano e Mês na camada Silver otimizou significativamente a escrita e leitura dos dados.
+
+Visibilidade Imediata: A geração das tabelas Gold permitiu criar um dashboard que responde às perguntas de negócio instantaneamente, como o Gráfico de Tendência de Receita.
+
+
+⚠️ O que deu ruim (Desafios)
+Ordenação Temporal: Enfrentamos dificuldade na ordenação cronológica dos gráficos (Ano-Mês). Foi necessário criar uma coluna concatenada "Periodo" e aplicar lógica SQL específica no notebook visual.ipynb para evitar que a linha do tempo ficasse desordenada.
+
+Qualidade dos Dados (Nulos): Alguns campos numéricos essenciais vieram nulos da origem, exigindo tratamento com .na.fill(0) para garantir que as somas e agregações não fossem quebradas.
+
+
+🔮 O que faríamos diferente (Melhorias Futuras)
+Se pudéssemos voltar no tempo ou tivéssemos mais prazo, focaríamos em:
+
+Orquestração Automática: Utilizar o Databricks Workflows para agendar e encadear a execução dos notebooks automaticamente.
+
+Validação de Dados (Data Quality): Implementar uma biblioteca como Great Expectations para validar se os dados estão nulos ou duplicados antes mesmo do processamento iniciar.
+
+CI/CD: Configurar uma esteira de integração contínua ligada ao repositório Git para um versionamento mais ágil e seguro do código.
+
 
 ✒️ Autores
 
