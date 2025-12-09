@@ -1,178 +1,170 @@
-🚗 Projeto de Engenharia de Dados: Indústria Automobilística
+# Engenharia de dados para a indústria automobilística
 
-📋 Sobre o Projeto
+Pipeline analítico de pedidos e notas fiscais no Databricks, organizado em camadas Bronze, Silver e Gold.
 
-Este projeto é uma solução completa de Engenharia de Dados (End-to-End) desenvolvida no Databricks. O objetivo foi ingerir dados brutos de uma indústria automobilística, tratá-los e criar um Data Lakehouse robusto para alimentar Dashboards Executivos.
+**Contexto:** projeto acadêmico desenvolvido no semestre **2025.2**, em equipe. Este repositório reúne os notebooks e a documentação do pipeline em camadas Bronze, Silver e Gold.
 
-O projeto transforma dados operacionais desconexos (Notas Fiscais e Pedidos) em inteligência estratégica para tomada de decisão.
+## Objetivo
 
-🏗️ Arquitetura (Medallion Architecture)
+Organizar dados operacionais de pedidos e faturamento para apoiar análises comerciais. O trabalho demonstra transformação de dados com PySpark, consultas SQL, agregações de negócio e visualizações no Databricks.
 
-O pipeline de dados segue a arquitetura Medalhão, garantindo qualidade e governança em cada etapa:
+As análises disponíveis incluem valores mensais de notas fiscais, desempenho por vendedor, distribuição de pedidos por estado, mix de produtos e distribuição por status.
+
+## Arquitetura
+
 ```mermaid
-graph LR
-A["notas_fiscais | pedidos (CSV)"] --> B((Bronze Layer))
-    B --> C((Silver Layer))
-    C --> D((Gold Layer))
-    D --> E[Dashboard Executivo]
+flowchart LR
+    A["CSV de pedidos e notas fiscais"] -->|"Carga no ambiente original"| B["Bronze: tabelas de origem"]
+    B --> C["Silver: padronização e deduplicação"]
+    C --> D["Gold: cinco tabelas analíticas"]
+    D --> E["Consultas e visualizações no Databricks"]
 ```
 
+A carga dos CSV ocorreu no ambiente original. Os arquivos de origem e o procedimento de ingestão não estão versionados. Os notebooks publicados partem das tabelas `classes.bronze.pedidos` e `classes.bronze.notas_fiscais`.
 
-📖 Histórias de Usuário
-1. O Estrategista Regional
-Roberto, Diretor Comercial da Região Sul, notou que os números gerais subiram, mas quer um "zoom" específico nos estados do Sul onde o volume de pedidos é alto, mas o ticket médio empacou. O objetivo é cirúrgico: parar de gastar marketing onde já se vende bem organicamente e redirecionar a verba apenas para onde precisa aumentar o valor da venda.
+## Tecnologias
 
-2. A Guardiã do Estoque
-Fernanda, Gerente de Supply Chain, precisa mapear quais "Peças de Reposição" saem com muita frequência, mas têm valor baixo. A ideia é colocar a reposição desses itens de "curva C" no piloto automático, liberando a equipe para focar a negociação de preços apenas nos produtos caros que realmente impactam o fluxo de caixa.
+| Tecnologia | Papel no projeto |
+| --- | --- |
+| Databricks | Ambiente de execução, catálogo de tabelas e visualizações |
+| PySpark | Padronização, deduplicação, transformação e agregação |
+| Spark SQL | Criação de objetos e consultas analíticas |
+| Delta Lake | Formato padrão de tabelas no Databricks; as escritas usam `saveAsTable` |
 
-3. O Caçador de Eficiência
-Marcelo, Head de Operações, está analisando o Funil de Vendas para descobrir onde perdemos mais: qual status (ex: "Aguardando Aprovação") gera mais cancelamentos? A meta é criar alertas para o Financeiro destravar esses pedidos rápido, evitando perder receita por pura burocracia ou demora.
+Os notebooks não fixam explicitamente o formato de escrita. A documentação do Databricks descreve [Delta Lake como formato padrão](https://docs.databricks.com/aws/en/delta/tutorial); a versão e a configuração do ambiente original não estão registradas.
 
-4. A Visionária de Produto
-Juliana, do Marketing de Produto, quer cruzar o mix de produtos com a sazonalidade para tirar uma dúvida: a venda de SUVs cai drasticamente em meses específicos? Com essa resposta, ela pode planejar promoções agressivas exatamente nessas épocas de baixa histórica, suavizando a curva de receita da empresa.
+## Organização do repositório
 
-5. O Auditor de Performance
-Ricardo, Supervisor de Vendas, precisa identificar os vendedores que, apesar de fecharem muitos pedidos, mantêm um ticket médio muito abaixo da equipe. Com a lista em mãos, ele vai treinar esse grupo especificamente em upsell (vender itens adicionais), aumentando a margem sem precisar caçar novos clientes.
+```text
+industria/
+├── bronze/
+│   ├── create-objects.ipynb
+│   └── inicializar.ipynb
+├── silver/
+│   ├── processing_data_nf.ipynb
+│   └── processing_data_pedidos.ipynb
+└── gold/
+    ├── processing_nf.ipynb
+    ├── processing_pedido.ipynb
+    └── visual.ipynb
+```
 
-6. O CFO (Diretor Financeiro)
-Alberto, nosso CFO, quer visualizar a discrepância real entre a data do pedido (intenção de compra) e a data da nota fiscal (faturamento). Ele precisa disso para ajustar a previsão de cash flow e garantir que a empresa não conte com um dinheiro que, por atrasos operacionais, só vai entrar na conta no mês seguinte.
+| Camada | Conteúdo publicado |
+| --- | --- |
+| Bronze | Criação do catálogo `classes` e dos três schemas; consultas às tabelas de origem |
+| Silver | Renomeação de campos, tratamento de texto, conversão de datas e deduplicação por documento e linha |
+| Gold | Agregações de notas fiscais e pedidos, persistência de tabelas e consultas para visualização |
 
-7. O Expancionista
-Carlos, de Novos Negócios, quer descobrir quais cidades do interior (fora das capitais) estão surpreendendo no ranking de vendas por estado. A intenção é usar dados de demanda reprimida real — e não "achismo" — para decidir onde abrir a próxima filial física ou centro de distribuição.
+## Tabelas analíticas
 
-8. A Analista de Churn (Perda)
-Beatriz, de Sucesso do Cliente, quer investigar se existe um padrão nos pedidos cancelados: eles vêm sempre da mesma região ou envolvem o mesmo grupo de produtos? Detectar isso cedo permite relatar um lote defeituoso ou falha logística regional antes que a imagem da marca seja prejudicada.
+As tabelas são gravadas no schema `classes.gold`.
 
-9. O Gerente de Campanhas
-Felipe, de Performance, quer saber qual é o produto "porta de entrada" (o mais vendido para novos clientes) em cada estado. A estratégia é usar esse item específico como "isca" nos anúncios regionais, diminuindo o Custo de Aquisição de Cliente (CAC).
+| Tabela | Agrupamento | Medidas calculadas |
+| --- | --- | --- |
+| `faturamento_mensal` | Ano e mês de emissão | Soma dos valores de linhas, impostos, quantidades e contagem de linhas com identificador de nota |
+| `performance_vendedores` | Nome do vendedor | Soma dos valores de notas, contagem de linhas e valor médio por linha |
+| `vendas_por_estado` | Estado | Soma dos valores de pedidos, contagem de linhas e valor médio por linha |
+| `mix_produtos` | Grupo e nome do produto | Soma de quantidades e valores de linhas de pedidos |
+| `funil_vendas` | Status do pedido | Contagem de linhas e soma dos valores por status |
 
-10. A Líder de Logística
-Renata, Diretora de Logística, quer comparar o volume físico de vendas (quantidade/peso) contra o retorno financeiro por estado. O objetivo é ter argumentos para renegociar contratos com transportadoras nas rotas onde se carrega muito peso, mas a margem de lucro é apertada.
+**Como interpretar:** os identificadores de pedido e nota podem aparecer em várias linhas de itens. O código usa `count` desses identificadores, e não contagem distinta de documentos. O campo `ticket_medio` corresponde a `avg(total_line_value)`, isto é, média por linha. Essas medidas precisam dessa ressalva ao serem apresentadas como indicadores de negócio.
 
+As agregações de pedidos incluem todos os status. Seus valores não representam, por si só, receita faturada. A tabela `funil_vendas` apresenta uma distribuição por status; não acompanha transições ou taxas de conversão entre etapas.
 
-🟤 Camada Bronze (Ingestão)
+## Regras de transformação
 
-Ingestão dos arquivos brutos .csv de Pedidos e Notas Fiscais.
+| Conjunto | Regras presentes no código |
+| --- | --- |
+| Pedidos | Campos renomeados para inglês; deduplicação por `order_id` e `order_line_id`; tratamento de texto; nulos numéricos substituídos por zero; imposto arredondado; data interpretada como `dd-MM-yyyy` |
+| Notas fiscais | Campos renomeados para inglês; deduplicação por `invoice_id` e `invoice_line_id`; tratamento de texto; imposto arredondado; datas convertidas com `to_date`; criação de ano e mês de emissão |
 
-Os dados são carregados em seu formato original, sem tratamentos, garantindo o histórico cru (Raw Data).
+A granularidade usada na deduplicação é a **linha do documento**. Os tipos numéricos dependem das tabelas Bronze: os notebooks não impõem um contrato completo de tipos ou de precisão monetária.
 
+## Dados de entrada
 
-⚪ Camada Silver (Limpeza e Padronização)
+Os notebooks esperam tabelas Bronze com os campos abaixo. A lista foi extraída dos mapeamentos do código; não substitui o schema original, que não está disponível.
 
-Aqui os dados são refinados para se tornarem confiáveis. As principais transformações foram:
+| Tabela Bronze | Campos utilizados |
+| --- | --- |
+| `classes.bronze.pedidos` | `nr_pedido`, `nr_linha_pedido`, `data_pedido`, `nome_vendedor`, `estado`, `cidade`, `nome_produto`, `cod_produto`, `grupo_produto`, `qtde_produtos`, `preco_unitario`, `valor_imposto`, `valor_total_linha`, `status_pedido` |
+| `classes.bronze.notas_fiscais` | `nr_nota_fiscal`, `nr_linha_nf`, `nr_pedido_referencia`, `nome_vendedor`, `data_emissao_nf`, `data_vencimento_nf`, `cod_produto`, `nome_produto`, `qtde_produto`, `valor_total_produto`, `imposto_produto` |
 
-Padronização: Renomeação de colunas do Português para Inglês (Padrão Global). Ex: nr_pedido → order_id.
+Quantidades, preços, impostos e valores de linha precisam estar em tipos numéricos compatíveis com as operações do Spark. A data do pedido usa `dd-MM-yyyy`; as datas de notas fiscais são interpretadas por `to_date` sem formato explícito. Origem, volume, licença e tipos exatos dos dados da entrega não estão registrados.
 
-Limpeza: Remoção de duplicatas e tratamento de espaços em branco em strings (trim, initcap).
+## Como consultar e executar
 
-Tipagem: Conversão de strings para datas reais (to_date) e tipos numéricos.
+Clone o repositório para examinar os arquivos:
 
-Qualidade: Tratamento de valores nulos (fillna) e arredondamento de valores decimais (round(2)).
+```bash
+git clone https://github.com/Luizrocha0/industria-automobilistida.git
+cd industria-automobilistida
+```
 
-Persistência: Salvamento em formato Delta particionado por Ano e Mês para performance.
+O processamento depende de Databricks, Spark e acesso ao catálogo `classes`. O comando `CREATE CATALOG` pressupõe [Unity Catalog](https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-syntax-ddl-create-catalog) e permissões adequadas. A edição, a versão do runtime e o volume de dados da entrega original não estão documentados.
 
+A sequência de dependências dos notebooks é:
 
-🟡 Camada Gold (Inteligência de Negócio)
+1. Executar [create-objects.ipynb](industria/bronze/create-objects.ipynb) para preparar catálogo e schemas. O setup usa `IF NOT EXISTS` para permitir repetição.
+2. Disponibilizar as duas tabelas Bronze no ambiente e consultar [inicializar.ipynb](industria/bronze/inicializar.ipynb). Esse notebook consulta dados já carregados.
+3. Executar as transformações Silver de [notas fiscais](industria/silver/processing_data_nf.ipynb) e [pedidos](industria/silver/processing_data_pedidos.ipynb).
+4. Executar as agregações Gold de [notas fiscais](industria/gold/processing_nf.ipynb) e [pedidos](industria/gold/processing_pedido.ipynb). As tabelas são gravadas antes das consultas de visualização.
+5. Executar [visual.ipynb](industria/gold/visual.ipynb) depois que as cinco tabelas Gold estiverem disponíveis.
 
-Nesta etapa, criamos agregações focadas em responder perguntas de negócio, divididas em 3 pilares estratégicos:
+Os notebooks Silver e Gold dependem das etapas anteriores. As escritas usam sobrescrita das tabelas, sem implementação de carga incremental. A integração completa com Databricks e os CSV originais não foi executada nesta revisão.
 
-1. Visão Financeira (Fluxo de Caixa) 💰
+## Verificação das correções
 
-Focada em dados de Notas Fiscais.
+Os testes usam a biblioteca padrão de Python e doubles de catálogo/schema para verificar execução das células, dependências, partições e consultas depois da gravação. Eles não executam PySpark nem validam os valores das agregações.
 
-Tabela faturamento_mensal: Responde "A empresa está crescendo?". Agregação temporal para análise de tendência.
+```bash
+python -m unittest discover -s tests -v
+```
 
-Tabela performance_vendedores: Responde "Quem são os top performers?". Ranking baseado em dados reais de faturamento, eliminando "achismos".
+## Limitações restantes
 
-2. Visão Comercial (Mercado) 📦
+- Os CSV, o procedimento de carga Bronze e a configuração do ambiente original não estão versionados.
+- Não há contrato completo de tipos, precisão monetária ou tratamento de registros inválidos; preencher nulos com zero é uma regra que requer validação de negócio.
+- Contagens e médias são por linha de documento, conforme as fórmulas descritas acima, e não métricas corrigidas por pedido ou nota distinta.
+- As análises de pedidos incluem todos os status; a distribuição por status não acompanha transições de um funil.
+- Não há orquestração nem integração automatizada com Databricks; visualizações exportadas são registros históricos, sem captura independente do painel ou benchmark.
 
-Focada no cruzamento com Pedidos.
+Ganhos de performance e resultados financeiros não foram medidos nos materiais publicados.
 
-Tabela vendas_por_estado: Responde "Qual região sustenta a operação?". Vital para logística e marketing regional.
+## Perguntas de negócio propostas
 
-Tabela mix_produtos: Responde "Quais são os carros-chefe?". Identificação dos grupos de produtos que geram maior receita (Curva Pareto).
+As histórias originais motivam análises adicionais. A tabela distingue a cobertura presente de ideias para evolução.
 
-3. Eficiência Operacional (Processos) ⚙️
+| Pergunta | Cobertura nesta versão |
+| --- | --- |
+| Quais estados têm maior volume e menor valor médio? | Parcial: agregação por estado, sem critérios de seleção e com média por linha |
+| Quais peças têm alto giro e baixo valor? | Parcial: quantidades e valores por produto, sem classificação ABC |
+| Em qual etapa os pedidos são cancelados? | Apenas distribuição por status; não existe histórico de transições |
+| Há sazonalidade nas vendas de SUVs? | Não há análise temporal por produto publicada |
+| Quais vendedores precisam melhorar o ticket? | Parcial: ranking de notas por vendedor, sem regra de comparação por pedido |
+| Quanto tempo decorre entre pedido e faturamento? | Não há cruzamento entre datas de pedidos e notas fiscais |
+| Quais cidades do interior lideram as vendas? | Não há agregação por cidade ou classificação de capitais publicada |
+| Cancelamentos se concentram em uma região ou produto? | Não há esse cruzamento publicado |
+| Qual produto inicia a relação com novos clientes por estado? | Não há análise de primeira compra ou identificação de novos clientes |
+| Quais rotas têm maior volume físico e menor margem? | Não há cálculo de peso, custo logístico ou margem publicado |
 
-Focada no Status dos Pedidos.
+Cancelamento de pedidos, churn de clientes, faturamento e recebimento de caixa são conceitos diferentes. Os notebooks publicados não calculam churn, margem ou fluxo de caixa efetivo.
 
-Tabela funil_vendas: Responde "Quanto dinheiro perdemos em cancelamentos?". Monitoramento da conversão de ponta a ponta (Pendente > Convertido > Cancelado).
+## Aprendizados e possibilidades de evolução
 
-📊 Dashboard Executivo
+O trabalho exercita a separação entre dados de origem, tratamento e consumo analítico. A padronização de campos e as tabelas Gold tornam explícitas algumas regras e perguntas do domínio comercial.
 
-O resultado final é um Painel Interativo no Databricks, organizado para leitura executiva:
+Uma evolução técnica futura poderia priorizar o contrato dos dados de origem, as definições de métricas por documento e validações de qualidade com a base real. Automatizar a execução faz sentido depois dessas verificações.
 
-KPIs de Topo: Faturamento Total e Volume de Vendas (Big Numbers).
+## Equipe
 
-Tendência: Gráfico de linha mostrando a evolução financeira histórica.
+| Integrante | Perfil informado na documentação original |
+| --- | --- |
+| Luan Guedes — líder | Perfil não informado |
+| Eduardo Borges | [GitHub](https://github.com/Eduardo-Borges18) |
+| Luiz Henrique | [GitHub](https://github.com/Luizrocha0) · [LinkedIn](https://www.linkedin.com/in/luiz-henrique-rocha-silva-450362337) |
+| Ricardo Severiano de Souza Filho | [GitHub](https://github.com/byteric) |
+| Sérgio Chousinho | [GitHub](https://github.com/sergiochou) |
 
-Comparativo: Ranking de Vendedores e Mix de Produtos.
+## Licença
 
-Geográfico: Mapa de calor de vendas por estado.
-
-Interatividade: Filtros globais por Vendedor, permitindo análises individualizadas.
-
-[Insira aqui um print do seu dashboard se quiser]
-
-🛠️ Tecnologias Utilizadas
-
-Databricks: Plataforma unificada de dados.
-
-PySpark: Processamento de dados em larga escala.
-
-SparkSQL: Consultas e manipulações de dados.
-
-Delta Lake: Formato de armazenamento otimizado e transacional.
-
-🚀 Como Executar
-
-Ingestão: Carregue os arquivos CSV.
-
-Notebook Bronze: Execute o notebook create_objects para criar o schema.
-
-Notebook Silver: Execute o notebook de tratamento para limpar os dados e salvar as tabelas Silver.
-
-Notebook Gold: Execute as agregações de negócio para gerar os KPIs.
-
-Visualização: Conecte as tabelas Gold ao Databricks Dashboard ou Power BI.
-
-
-✅ O que deu bom
-Padronização Global: Conseguimos transformar colunas em português e formatos heterogêneos em um padrão global (Inglês) limpo e unificado.
-
-Performance: A estratégia de particionamento por Ano e Mês na camada Silver otimizou significativamente a escrita e leitura dos dados.
-
-Visibilidade Imediata: A geração das tabelas Gold permitiu criar um dashboard que responde às perguntas de negócio instantaneamente, como o Gráfico de Tendência de Receita.
-
-
-⚠️ O que deu ruim (Desafios)
-Ordenação Temporal: Enfrentamos dificuldade na ordenação cronológica dos gráficos (Ano-Mês). Foi necessário criar uma coluna concatenada "Periodo" e aplicar lógica SQL específica no notebook visual.ipynb para evitar que a linha do tempo ficasse desordenada.
-
-Qualidade dos Dados (Nulos): Alguns campos numéricos essenciais vieram nulos da origem, exigindo tratamento com .na.fill(0) para garantir que as somas e agregações não fossem quebradas.
-
-
-🔮 O que faríamos diferente (Melhorias Futuras)
-Se pudéssemos voltar no tempo ou tivéssemos mais prazo, focaríamos em:
-
-Orquestração Automática: Utilizar o Databricks Workflows para agendar e encadear a execução dos notebooks automaticamente.
-
-Validação de Dados (Data Quality): Implementar uma biblioteca como Great Expectations para validar se os dados estão nulos ou duplicados antes mesmo do processamento iniciar.
-
-CI/CD: Configurar uma esteira de integração contínua ligada ao repositório Git para um versionamento mais ágil e seguro do código.
-
-
-✒️ Autores
-
-Luan Guedes - Líder [GitHub]() 
-
-
-Eduardo Borges [Github](https://github.com/Eduardo-Borges18)
-
-
-Luiz Henrique [LinkedIn](www.linkedin.com/in/luiz-henrique-rocha-silva-450362337)
-
-
-Ricarodo Siberiano [GitHub](https://github.com/byteric)
-
-
-Sérgio Chousinho [GitHub](https://github.com/sergiochou)
+O repositório não contém arquivo de licença. A licença do código e as condições de uso dos dados ainda precisam ser definidas pelos responsáveis.
