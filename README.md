@@ -207,14 +207,20 @@ O trabalho exercita a separação entre origem, tratamento e consumo, a granular
 
 ## Equipe
 
-| Integrante | Perfis |
-| --- | --- |
-| Luan Guedes — líder | Perfil não informado |
-| Eduardo Borges | [GitHub](https://github.com/Eduardo-Borges18) · [LinkedIn](https://www.linkedin.com/in/eduardoborges2006/) |
-| Luiz Henrique | [GitHub](https://github.com/Luizrocha0) · [LinkedIn](https://www.linkedin.com/in/luiz-henrique-rocha-silva-450362337) |
-| Ricardo Severiano de Souza Filho | [GitHub](https://github.com/byteric) · [LinkedIn](https://www.linkedin.com/in/ricardofilhodev/) |
-| Sérgio Chousinho | [GitHub](https://github.com/sergiochou) |
+| Integrante | Função e foco | Perfis |
+| --- | --- | --- |
+| Luiz Henrique | **Tech Lead** — arquitetura e coordenação técnica | [GitHub](https://github.com/Luizrocha0) · [LinkedIn](https://www.linkedin.com/in/luiz-henrique-rocha-silva-450362337) |
+| Eduardo Borges | **Engenheiro de Dados** — ingestão Bronze e tratamento Silver | [GitHub](https://github.com/Eduardo-Borges18) · [LinkedIn](https://www.linkedin.com/in/eduardoborges2006/) |
+| Ricardo Severiano de Souza Filho | **Analytics Engineer** — camada Gold, SQL e validação | [GitHub](https://github.com/byteric) · [LinkedIn](https://www.linkedin.com/in/ricardofilhodev/) |
+| Sérgio Chousinho | **Analista de Dados** — indicadores e visualizações | [GitHub](https://github.com/sergiochou) |
 
 ## Licença
 
-Ainda não há licença de reutilização declarada no repositório para o código ou para os dados.
+Este projeto é um **material de estudo de engenharia de dados**, com licenças específicas para cada parte:
+
+| Material | Licença | Como reutilizar |
+| --- | --- | --- |
+| Documentação, diagramas e explicações dos notebooks | [CC BY-NC-SA 4.0](LICENSE-DOCUMENTACAO.md) | Estudar, adaptar e compartilhar sem finalidade comercial, dando crédito à equipe, indicando alterações e distribuindo adaptações sob a mesma licença ou uma compatível |
+| Código Python/SQL dos notebooks, testes e configuração | [MIT](LICENSE) | Usar, modificar e distribuir, inclusive comercialmente, preservando os avisos de autoria e licença |
+
+Os **CSV de origem não estão incluídos** no repositório e não recebem estas licenças. Dados e materiais de terceiros seguem as permissões dos respectivos titulares.
